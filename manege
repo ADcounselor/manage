@@ -1,0 +1,582 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<string> 
+#include<cstring>
+# define MAXSIZE 100
+# define SMAXSIZE 600
+#include<algorithm>
+typedef struct {
+	long xuehao[MAXSIZE];
+	long banji[MAXSIZE];
+	char xingming[MAXSIZE][15];
+	int  ruzhusushe[MAXSIZE];
+	int sushe[SMAXSIZE];
+	int size;
+}wenying;
+
+//此函数用来添加写入文件
+void write(wenying *s)
+{
+	FILE *fp;
+	char ch;
+	int i;
+    if((fp=fopen("F:\\数据结构\\课设\\message.txt","a"))==NULL)
+    {
+        printf("文件打开时出错\n");
+        exit(0);
+    }
+	ch=getchar();
+	for(i=0;i<s->size;i++)
+	{
+		fprintf(fp,"%ld %ld %d %s\n",s->xuehao[i],s->banji[i],s->ruzhusushe[i],s->xingming[i]);
+	}
+	printf("写入完成\n");
+	fclose(fp);
+}
+
+//此函数用来删除和修改操作写入文件
+void Write(wenying *s)
+{
+	FILE *fp;
+	char ch;
+	int i;
+    if((fp=fopen("F:\\数据结构\\课设\\message.txt","w"))==NULL)
+    {
+        printf("文件打开时出错\n");
+        exit(0);
+    }
+	ch=getchar();
+	for(i=0;i<s->size;i++)
+	{
+		fprintf(fp,"%ld %ld %d %s\n",s->xuehao[i],s->banji[i],s->ruzhusushe[i],s->xingming[i]);
+	}
+	printf("写入完成\n");
+	fclose(fp);
+}
+
+//此函数用来读取文件中的信息
+void printw(wenying *s)
+{
+	FILE *fp;
+	int len;
+	char check[1024];
+	if((fp=fopen("F:\\数据结构\\课设\\message.txt","r"))==NULL)
+    {
+        printf("文件打开时出错\n");
+        exit(0);
+    }
+    printf("正在读取文件信息...\n") ;
+	printf("文件中的学生的学号、班级、入住宿舍、姓名如下\n");
+	while(fgets(check,1024,fp)!=NULL)
+	{
+		len=strlen(check);
+		printf("%s",check);
+	}
+	printf("读取完成\n");
+	system("pause");
+	fclose(fp);
+}
+
+void init(wenying *slt)
+{
+	int i = 0;
+	for (i = 0; i<SMAXSIZE; i++)
+		slt->sushe[i] = 0;
+	slt->size = 0;
+}
+
+void display(wenying *slt)
+{
+	int i=0;
+	if(slt->size==0)
+	printf("当前学生信息为空！\n"); 
+	else{ 
+	printf("下列展示依次按照学号，班级，入住宿舍，姓名\n");
+	for(i=0;i<slt->size;i++)
+		printf("%d %d %d %s\n",slt->xuehao[i],slt->banji[i],slt->ruzhusushe[i],slt->xingming[i]); 
+	} 
+	system("pause");
+}
+void add(wenying *slt) 
+{
+	int i;
+	printf("请依次输入要添加学生的学号，班级，要加入到得宿舍号以及姓名:\n");
+	long xue, ban;
+	int su;
+	char name[15];
+	scanf("%ld%ld%d%s", &xue, &ban, &su, name);
+	if (slt->sushe[su] == 6)
+		printf("该宿舍已经注满，不能再添加");
+	else {
+		slt->xuehao[slt->size] = xue;
+		slt->banji[slt->size] = ban;
+		strcpy(slt->xingming[slt->size], name);
+		slt->ruzhusushe[slt->size] = su;
+		slt->sushe[su]++;
+		slt->size++;
+		printf("添加成功\n");
+	}
+	write(slt);
+	system("pause");
+}
+
+void shanchu(wenying *slt) 
+{
+	long xuehao;
+	int j = -1;
+	printf("请输入要删除入住记录学生的学号：");
+	scanf("%ld", &xuehao);
+	for (int i = 0; i<slt->size; i++)
+		if (xuehao == slt->xuehao[i])
+			j = i;
+	if (j == -1)
+		printf("没有该学生的记录！");
+	else
+		for (j; j<slt->size; j++)
+		{
+			slt->xuehao[j] = slt->xuehao[j + 1];
+			slt->banji[j] = slt->banji[j + 1];
+			strcpy(slt->xingming[j], slt->xingming[j + 1]);
+			slt->sushe[slt->ruzhusushe[j]]--;
+			slt->ruzhusushe[j] = slt->ruzhusushe[j + 1];
+                        printf("删除成功\n");
+	                slt->size--; 
+		}
+	Write(slt);
+	system("pause");
+}
+void xiugai(wenying *slt) 
+{
+	long xuehao, ban;
+	int su;
+	char name[15];
+	int j = -1;
+	printf("请输入需要修改的学生的学号：");
+	scanf("%ld", &xuehao);
+	for (int i = 0; i<slt->size; i++)
+		if (xuehao == slt->xuehao[i])
+			j = i;
+	if (j == -1)
+		printf("没有该学生的记录！");
+	else
+	{
+		printf("请slt->size--; 依次输入希望修改学生的学号，班级，要加入到得宿舍号以及姓名:\n");
+		scanf("%ld%ld%d%s", &xuehao, &ban, &su, name);
+		slt->xuehao[j] = xuehao;
+		slt->banji[j] = ban;
+		strcpy(slt->xingming[j], name);
+		slt->ruzhusushe[j] = su;
+		printf("修改成功\n");
+	}
+	Write(slt);
+	system("pause");
+}
+void stu_record(wenying *slt)
+{
+ 	int choice,i;
+ 	for(i=1;choice!=0;i++){
+ 		system("cls");
+         printf("★**************************************************************★\n");
+		 printf("§****************★欢迎使用增删改学生信息系统★****************§\n");
+		 printf("§**************************************************************§\n");
+		 printf("§§                                                          §§\n");
+		 printf("§§                                                          §§\n");
+		 printf("§§                                                          §§\n");
+		 printf("§§                    ☆1 . 增加学生信息                    §§\n");
+		 printf("§§                    ☆2 . 删除学生信息                    §§\n");
+		 printf("§§                    ☆3 . 修改学生信息                    §§\n");
+		 printf("§§                    ☆4 . 展示已有学生信息                §§\n");
+		 printf("§§                    ☆0 . 退出系统                        §§\n");
+		 printf("§§                                                          §§\n");
+		 printf("§§                                                          §§\n");
+		 printf("§§                                                          §§\n");
+		 printf("★**************************************************************★\n");
+ 	     printf("◆请选择(0-4):\n");
+ 	     scanf("%d", &choice);
+		 switch (choice)
+		 {
+		 case 1: add(slt); 			   break;
+		 case 2: shanchu(slt);         break;
+		 case 3: xiugai(slt);          break;
+		 case 4: display(slt);         break; 
+		 case 0:                       break;
+		 }
+	}
+ }
+
+void display1(wenying *slt)
+{
+	int i=0;
+	if(slt->size==0)
+	printf("当前学生信息为空！\n"); 
+	else{ 
+	printf("下列展示依次按照学号，班级，入住宿舍，姓名\n");
+	for(i=0;i<slt->size;i++)
+		printf("%d %d %d %s\n",slt->xuehao[i],slt->banji[i],slt->ruzhusushe[i],slt->xingming[i]); 
+	} 
+	system("pause");
+}
+void sort1(wenying *slt) //按姓名排序
+{
+	int i,j,xuehao,ruzhusushe,banji;
+	char temp[15];
+	for(i=0;i<slt->size-1;i++)
+	   for(j=i+1;j<slt->size;j++)
+	   {
+	   	if(strcmp(slt->xingming[i],slt->xingming[j])>0)
+	   	{
+		   strcpy(temp,slt->xingming[i]);
+		   strcpy(slt->xingming[i],slt->xingming[j]);
+		   strcpy(slt->xingming[j],temp);
+		   xuehao=slt->xuehao[i];
+		   slt->xuehao[i]=slt->xuehao[j];
+		   slt->xuehao[j]=xuehao;
+		   banji=slt->banji[i];
+		   slt->banji[i]=slt->banji[j];
+		   slt->banji[j]=banji;
+		   ruzhusushe=slt->ruzhusushe[i];
+		   slt->ruzhusushe[i]=slt->ruzhusushe[j];
+		   slt->ruzhusushe[j]=ruzhusushe;
+		}
+	   }
+} 
+void sort2(wenying *slt)//按学号排序 
+{
+	int i,j,xuehao,ruzhusushe,banji;
+	char temp[15];
+	for(i=0;i<slt->size-1;i++)
+	   for(j=i+1;j<slt->size;j++)
+	   {
+	   	if(slt->xuehao[i]>slt->xuehao[j])
+		   {
+		   	strcpy(temp,slt->xingming[i]);
+		   strcpy(slt->xingming[i],slt->xingming[j]);
+		   strcpy(slt->xingming[j],temp);
+		   xuehao=slt->xuehao[i];
+		   slt->xuehao[i]=slt->xuehao[j];
+		   slt->xuehao[j]=xuehao;
+		   banji=slt->banji[i];
+		   slt->banji[i]=slt->banji[j];
+		   slt->banji[j]=banji;
+		   ruzhusushe=slt->ruzhusushe[i];
+		   slt->ruzhusushe[i]=slt->ruzhusushe[j];
+		   slt->ruzhusushe[j]=ruzhusushe;
+		   } 
+	   } 
+}
+void sort3(wenying *slt)//按宿舍号排序 
+{
+	int i,j,xuehao,ruzhusushe,banji;
+	char temp[15];
+	for(i=0;i<slt->size-1;i++)
+	   for(j=i+1;j<slt->size;j++)
+	   {
+	   	if(slt->ruzhusushe[i]>slt->ruzhusushe[j])
+		   {
+			strcpy(temp,slt->xingming[i]);
+		    strcpy(slt->xingming[i],slt->xingming[j]);
+		    strcpy(slt->xingming[j],temp);
+		    xuehao=slt->xuehao[i];
+		    slt->xuehao[i]=slt->xuehao[j];
+		    slt->xuehao[j]=xuehao;
+		    banji=slt->banji[i];
+		    slt->banji[i]=slt->banji[j];
+		    slt->banji[j]=banji;
+		    ruzhusushe=slt->ruzhusushe[i];
+		    slt->ruzhusushe[i]=slt->ruzhusushe[j];
+		    slt->ruzhusushe[j]=ruzhusushe;
+		   } 
+	   } 
+}
+void sort(wenying *slt)
+{
+	int choice,i;
+ 	for(i=1;choice!=0;i++){
+ 		system("cls");
+         printf("★**************************************************************★\n");
+		 printf("§****************★欢迎使用增删改学生信息系统★****************§\n");
+		 printf("§**************************************************************§\n");
+		 printf("§§                                                          §§\n");
+		 printf("§§                                                          §§\n");
+		 printf("§§                                                          §§\n");
+		 printf("§§                    ☆1 . 按姓名排序                      §§\n");
+		 printf("§§                    ☆2 . 按学号排序                      §§\n");
+		 printf("§§                    ☆3 . 按宿舍号排序                    §§\n");
+		 printf("§§                    ☆4 . 展示已有学生信息                §§\n");
+		 printf("§§                    ☆0 . 退出系统                        §§\n");
+		 printf("§§                                                          §§\n");
+		 printf("§§                                                          §§\n");
+		 printf("§§                                                          §§\n");
+		 printf("★**************************************************************★\n");
+ 	     printf("◆请选择(0-4):\n");
+ 	     scanf("%d", &choice);
+		 switch (choice)
+		 {
+		 case 1: sort1(slt); 	       break;
+		 case 2: sort2(slt);           break;
+		 case 3: sort3(slt);           break;
+		 case 4: display1(slt);        break; 
+		 case 0:                       break;
+		 }
+	}
+}
+
+
+void disp(wenying *slt)
+{
+	void find_record_menu(wenying *slt); 
+	char c;
+	fflush(stdin);
+	printf("输入数字不对，请在原处重新输入");
+	find_record_menu(slt);
+} 
+ int panduan1(char ch)//判断是否继续查找
+  {
+  	scanf("%c",&ch);
+  	printf("是否继续查找？<y/n>");
+  	fflush(stdin);
+  	scanf("%c",&ch);
+  	if(ch=='y')
+  	{
+  		system("cls");
+  		return(1);
+  	}
+  	else
+  	return 0;
+  } 
+  int panduan2(char ch)//如果学生不存在，判断是否继续查找
+  {
+  	void find_record_menu(wenying *slt);
+  	scanf("%c",&ch);
+  	printf("该学生不存在，是否继续查找？<y/n>");
+  	fflush(stdin);
+  	scanf("%c",&ch);
+	if(ch=='y')
+	{
+		system("cls");
+		return(1);
+	}
+	else return 0;
+  } 
+  int panduan3(wenying *slt)//如果没有学生记录则返回主界面
+  {
+  	void find_record_menu(wenying *slt);
+  	printf("已无学生记录\n");
+  	printf("\n");
+  	disp(slt);
+  	find_record_menu(slt);
+  } 
+  void print(wenying *slt, int mid)
+ {
+	 printf("查找成功------该学生信息为：\n");
+	 printf("宿舍号：%d\n",slt->ruzhusushe[mid]);
+	 printf("姓名：%s\n", slt->xingming[mid]);
+	 printf("学号：%d\n", slt->xuehao[mid]);
+ }
+ void find_record_name(wenying *slt)
+ {
+ 	 void find_record_menu(wenying *slt);
+	 if (slt->size == 0) panduan3(slt);
+	 else
+	 {
+		 int low = 0, high = slt->size, mid, flag = 0;
+		 char s[20],ch;
+		 printf("\n");
+		 printf("按姓名查找----->请输入查找的姓名：");
+		 scanf("%s", s);
+		 printf("\n");
+		 while (low<=high)
+		 {
+			 mid = (low + high) / 2;
+			 if (strcmp(slt->xingming[mid],s) == 0)
+			 {
+				 flag = 1; break;
+			 }
+			 else if (strcmp(slt->xingming[mid], s) < 0)
+			 {
+				 low = mid + 1;
+			 }
+			 else
+				 high = mid - 1;
+		 }
+		 if (flag == 1)
+		 {
+			 print(slt,mid);
+			 if(panduan1(ch))find_record_name(slt);
+			 else
+			 {
+			 system("cls");
+			 find_record_menu(slt);
+			 }
+		}
+		else
+		{
+			if(panduan2(ch)) find_record_name(slt);
+			else
+			{
+				system("cls");
+				find_record_menu(slt);
+			}
+		}
+	}
+ }
+ void find_record_num(wenying *slt)
+ {
+ 	 void find_record_menu(wenying *slt);
+	 if (slt->size == 0) panduan3(slt);
+	 else
+	 {
+		 int low = 0, high =slt->size, mid, flag = 0;
+		 int n;
+		 char ch;
+		 printf("按学号查找----->请输入查找的学号：");
+		 scanf("%d", &n);
+		 printf("\n");
+		 while (low <= high)
+		 {
+			 mid = (low + high) / 2;
+			 if (n==slt->xuehao[mid])
+			 {
+				 flag = 1; break;
+			 }
+			 else if (n>slt->xuehao[mid])
+			 {
+				 low = mid + 1;
+			 }
+			 else
+				 high = mid - 1;
+		 }
+		  if (flag == 1)
+		 {
+			 print(slt,mid);
+			 if(panduan1(ch))find_record_num(slt);
+			 else
+			 {
+			 system("cls");
+			 find_record_menu(slt);
+			 }
+		}
+		else
+		{
+			if(panduan2(ch)) find_record_num(slt);
+			else
+			{
+				system("cls");
+				find_record_menu(slt);
+			}
+		}
+	 }
+ }
+ void find_record_room(wenying *slt)
+ {
+ 	 void find_record_menu(wenying *slt);
+	 if (slt->size == 0) panduan3(slt);
+	 else
+	 {
+		 int low = 0, high = slt->size, mid, flag = 0;
+		 int n;
+		 char ch;
+		 printf("按宿舍号查找----->请输入查找的宿舍号：");
+		 scanf("%d", &n);
+		 printf("\n");
+		 while (low <= high)
+		 {
+			 mid = (low + high) / 2;
+			 if (n==slt->ruzhusushe[mid])
+			 {
+				 flag = 1; break;
+			 }
+			 else if (n>slt->ruzhusushe[mid])
+			 {
+				 low = mid + 1;
+			 }
+			 else
+				 high = mid - 1;
+		 }
+		  if (flag == 1)
+		 {
+			 print(slt,mid);
+			 if(panduan1(ch))find_record_room(slt);
+			 else
+			 {
+			 system("cls");
+			 find_record_menu(slt);
+			 }
+		}
+		else
+		{
+			if(panduan2(ch)) find_record_room(slt);
+			else
+			{
+				system("cls");
+				find_record_menu(slt);
+			}
+		}
+	 }
+ }
+
+ void find_record_menu(wenying *slt)
+ {
+	 int choice, i;
+	 for(i=1;choice!=0;i++)
+	 {
+		 system("cls");
+		 printf("★**************************************************************★\n");
+		 printf("§*******************★欢迎使用查找管理系统★*******************§\n");
+		 printf("§**************************************************************§\n");
+		 printf("§§                                                          §§\n");
+		 printf("§§                                                          §§\n");
+		 printf("§§                                                          §§\n");
+		 printf("§§                    ☆1 . 按姓名查找                      §§\n");
+		 printf("§§                    ☆2 . 按学号查找                      §§\n");
+		 printf("§§                    ☆3 . 按宿舍号查找                    §§\n");
+		 printf("§§                    ☆0 . 退出系统                        §§\n");
+		 printf("§§                                                          §§\n");
+		 printf("§§                                                          §§\n");
+		 printf("§§                                                          §§\n");
+		 printf("★**************************************************************★\n");
+		 printf("◆请选择(0-3):\n");
+		 scanf("%d", &choice);
+		 switch (choice)
+		 {
+		 case 1:find_record_name(slt);  break;
+		 case 2:find_record_num(slt);   break;
+		 case 3:find_record_room(slt);  break;
+		 case 0:                        break;
+		 }
+	 }
+ }
+int main()
+{
+int i=8, a;
+	wenying gongyu;
+	wenying *p = &gongyu;
+	init(p);
+	for (a = 1; i!= 0; a++) {
+		system("CLS");
+		printf("★***************************************************************★\n");
+		printf("§********************★欢迎使用管理系统★***********************§\n");
+		printf("§***************************************************************§\n");
+		printf("§§                                                           §§\n");
+		printf("§§                                                           §§\n");
+		printf("§§         ☆1. 实现学生住宿记录的添加，删除，编辑           §§\n");
+		printf("§§         ☆2 .从文件中读取某学生入住信息                   §§\n");
+		printf("§§         ☆3. 对住宿信息按关键字排序                       §§\n");
+		printf("§§         ☆4. 利用二分法查找实现住宿信息的查询             §§\n");
+		printf("§§         ☆0 . 退出系统                                    §§\n");
+		printf("§§                                                           §§\n");
+		printf("§§                                                           §§\n");
+		printf("★***************************************************************★\n");
+		printf("◆请选择(0-4):\n");
+		scanf("%d", &i);
+		switch (i) 
+		{
+		case 1:stu_record(p);break;
+		case 2: printw(p); break;
+		case 3: sort(p); break;
+		case 4: find_record_menu(p);break;
+		case 0:break;
+		}
+	}
+	return 0;
+}
