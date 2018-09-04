@@ -20,7 +20,7 @@ void write(wenying *s)
 	FILE *fp;
 	char ch;
 	int i;
-    if((fp=fopen("F:\\数据结构\\课设\\message.txt","a"))==NULL)
+    if((fp=fopen("D:\\数据结构\\课设\\message.txt","a"))==NULL)
     {
         printf("文件打开时出错\n");
         exit(0);
@@ -40,7 +40,7 @@ void Write(wenying *s)
 	FILE *fp;
 	char ch;
 	int i;
-    if((fp=fopen("F:\\数据结构\\课设\\message.txt","w"))==NULL)
+    if((fp=fopen("D:\\数据结构\\课设\\message.txt","w"))==NULL)
     {
         printf("文件打开时出错\n");
         exit(0);
@@ -60,7 +60,7 @@ void printw(wenying *s)
 	FILE *fp;
 	int len;
 	char check[1024];
-	if((fp=fopen("F:\\数据结构\\课设\\message.txt","r"))==NULL)
+	if((fp=fopen("D:\\数据结构\\课设\\message.txt","r"))==NULL)
     {
         printf("文件打开时出错\n");
         exit(0);
